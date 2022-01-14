@@ -1,0 +1,14 @@
+apiVersion: webapp.mydev.org/v1
+kind: RestAPI
+metadata:
+  name: restapi-sample
+spec:
+  redisName: redis-sample
+  frontend:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 80m
+    # check that this doesn't work,
+    # then delete it
+    serverPort: 8082

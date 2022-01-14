@@ -1,0 +1,140 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.7.0
+  creationTimestamp: null
+  name: restapis.webapp.mydev.org
+spec:
+  group: webapp.mydev.org
+  names:
+    kind: RestAPI
+    listKind: RestAPIList
+    plural: restapis
+    singular: restapi
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: GuestBook Frontend URL
+      jsonPath: .status.url
+      name: URL
+      type: string
+    - description: Is the Deployment Up-To-Date
+      jsonPath: .status.conditions[?(@.type=="DeploymentUpToDate")].status
+      name: Deployment
+      type: string
+    - description: Is the Service Up-To-Date
+      jsonPath: .status.conditions[?(@.type=="ServiceUpToDate")].status
+      name: Service
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: RestAPI is the Schema for the restapis API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RestAPISpec defines the desired state of RestAPI
+            properties:
+              frontend:
+                description: Frontend is a struct
+                properties:
+                  replicas:
+                    default: 1
+                    description: How many replicas
+                    format: int32
+                    minimum: 0
+                    type: integer
+                  resources:
+                    description: cpu/memory resources
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: 'Limits describes the maximum amount of compute
+                          resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: 'Requests describes the minimum amount of compute
+                          resources required. If Requests is omitted for a container,
+                          it defaults to Limits if that is explicitly specified, otherwise
+                          to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        type: object
+                    type: object
+                  serverPort:
+                    default: 8080
+                    description: ServerPort is what port we serve the API on
+                    format: int32
+                    minimum: 0
+                    type: integer
+                type: object
+              redisName:
+                description: RedisName is where the Redis is
+                type: string
+            required:
+            - frontend
+            type: object
+          status:
+            description: RestAPIStatus defines the observed state of RestAPI
+            properties:
+              conditions:
+                description: Conditions of the RestAPI
+                items:
+                  properties:
+                    lastProbeTime:
+                      format: date-time
+                      type: string
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              url:
+                description: URL is a string of... stuff
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

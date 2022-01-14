@@ -1,0 +1,25 @@
+domain: mydev.org
+layout:
+- go.kubebuilder.io/v3
+projectName: guestbook-operator
+repo: mydev.org/guestbook
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: mydev.org
+  group: webapp
+  kind: RestAPI
+  path: mydev.org/guestbook/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: mydev.org
+  group: webapp
+  kind: Redis
+  path: mydev.org/guestbook/api/v1
+  version: v1
+version: "3"
